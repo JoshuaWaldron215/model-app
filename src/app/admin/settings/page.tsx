@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { User, Shield, Bell, Palette, LogOut, Users, ChevronRight } from "lucide-react";
 import { ProfileForm } from "@/components/admin/profile-form";
 import { SignOutButton } from "@/components/admin/sign-out-button";
+import { NotificationToggle } from "@/components/notification-toggle";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -118,11 +119,12 @@ export default async function SettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
+              <NotificationToggle />
               <div className="flex items-center justify-between p-4 rounded-xl bg-secondary/30">
                 <div>
-                  <p className="font-medium">Push Notifications</p>
+                  <p className="font-medium">Model Notifications</p>
                   <p className="text-sm text-muted-foreground">
-                    Models receive push notifications when you post new content or announcements
+                    Models receive push notifications when you post content
                   </p>
                 </div>
                 <div className="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-sm font-medium">

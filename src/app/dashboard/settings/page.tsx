@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { User, Shield, Bell, Palette, LogOut } from "lucide-react";
 import { ProfileForm } from "@/components/admin/profile-form";
 import { SignOutButton } from "@/components/admin/sign-out-button";
+import { NotificationToggle } from "@/components/notification-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -93,19 +94,9 @@ export default async function ModelSettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 rounded-xl bg-secondary/30">
-                <div>
-                  <p className="font-medium">Push Notifications</p>
-                  <p className="text-sm text-muted-foreground">
-                    Get notified when new reels, scripts, or announcements are posted
-                  </p>
-                </div>
-                <div className="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-sm font-medium">
-                  Enabled
-                </div>
-              </div>
+              <NotificationToggle />
               <p className="text-xs text-muted-foreground">
-                💡 Tip: Allow notifications in your browser when prompted to receive updates even when the app is closed.
+                💡 Enable notifications to get updates about new reels, scripts, and announcements - even when your phone is locked!
               </p>
             </div>
           </CardContent>
