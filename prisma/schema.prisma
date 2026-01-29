@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== AUTH & USERS ====================
+
+enum UserRole {
+  ADMIN
+  MODEL
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+}
+
+model User {
+  id             String     @id @default(cuid())
+  email          String     @unique
+  password       String
+  name           String
+  role           UserRole   @default(MODEL)
+  status         UserStatus @default(ACTIVE)
+  avatarUrl      String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  // Relations
+  contentAssignments ContentAssignment[]
+  announcementTags   AnnouncementTag[]
+  createdContent     Content[]           @relation("ContentCreator")
+  createdAnnouncements Announcement[]    @relation("AnnouncementCreator")
+  sessions           Session[]
+  accounts           Account[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ==================== CONTENT ====================
+
+enum ContentType {
+  REEL
+  SCRIPT
+}
+
+enum ScriptCategory {
+  ICE_BREAKER
+  UPSELL
+  RETENTION
+  RE_ENGAGEMENT
+  OTHER
+}
+
+enum ReelCategory {
+  HIGH_CONVERTING
+  TRENDING
+  SOFT_PROMO
+  TUTORIAL
+  LIFESTYLE
+  OTHER
+}
+
+model Content {
+  id          String      @id @default(cuid())
+  type        ContentType
+  title       String
+  description String?     @db.Text
+
+  // For REEL type
+  videoUrl      String?
+  audioUrl      String?
+  audioLinkUrl  String?    // External sound link (TikTok, Instagram)
+  caption       String?    @db.Text  // Caption below video
+  overlayText   String?    @db.Text  // Text overlay on video
+  reelCategory  ReelCategory?
+  hookText      String?    @db.Text  // Hook line
+  instructions  String?    @db.Text  // Admin instructions/notes
+
+  // For SCRIPT type
+  scriptContent   String?       @db.Text
+  scriptCategory  ScriptCategory?
+
+  // Common fields
+  isGlobal    Boolean   @default(false)  // Available to all models
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdById String
+
+  // Relations
+  createdBy   User                @relation("ContentCreator", fields: [createdById], references: [id])
+  assignments ContentAssignment[]
+
+  @@index([type])
+  @@index([isGlobal])
+  @@index([createdById])
+  @@map("contents")
+}
+
+model ContentAssignment {
+  id        String   @id @default(cuid())
+  contentId String
+  modelId   String
+  assignedAt DateTime @default(now())
+
+  // Relations
+  content Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  model   User    @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  @@unique([contentId, modelId])
+  @@index([modelId])
+  @@map("content_assignments")
+}
+
+// ==================== ANNOUNCEMENTS ====================
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  body      String   @db.Text
+  isPinned  Boolean  @default(false)
+  isGlobal  Boolean  @default(false)  // If true, visible to all models
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdById String
+
+  // Relations
+  createdBy User              @relation("AnnouncementCreator", fields: [createdById], references: [id])
+  tags      AnnouncementTag[]
+
+  @@index([isGlobal])
+  @@index([isPinned])
+  @@index([createdById])
+  @@map("announcements")
+}
+
+model AnnouncementTag {
+  id             String   @id @default(cuid())
+  announcementId String
+  modelId        String
+  createdAt      DateTime @default(now())
+
+  // Relations
+  announcement Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  model        User         @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  @@unique([announcementId, modelId])
+  @@index([modelId])
+  @@map("announcement_tags")
+}
+
+// ==================== PUSH NOTIFICATIONS ====================
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("push_subscriptions")
+}

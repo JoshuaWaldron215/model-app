@@ -1,0 +1,43 @@
+{
+  "name": "MAP MGT",
+  "short_name": "MAP MGT",
+  "description": "Content inspiration & management for MAP MGT models",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Reels",
+      "url": "/dashboard/reels",
+      "description": "View reel inspirations"
+    },
+    {
+      "name": "Scripts",
+      "url": "/dashboard/scripts",
+      "description": "View script inspirations"
+    },
+    {
+      "name": "Announcements",
+      "url": "/dashboard/announcements",
+      "description": "View announcements"
+    }
+  ]
+}
