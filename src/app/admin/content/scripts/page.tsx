@@ -7,6 +7,8 @@ import Link from "next/link";
 import { ContentActions } from "@/components/admin/content-actions";
 import { getScripts } from "@/lib/cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function ScriptsPage() {
   const scripts = await getScripts();
 

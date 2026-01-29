@@ -7,6 +7,8 @@ import Link from "next/link";
 import { AnnouncementActions } from "@/components/admin/announcement-actions";
 import { getAnnouncements } from "@/lib/cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function AnnouncementsPage() {
   const announcements = await getAnnouncements();
   const pinnedCount = announcements.filter((a) => a.isPinned).length;

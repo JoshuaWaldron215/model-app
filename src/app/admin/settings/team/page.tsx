@@ -10,6 +10,8 @@ import { CreateAdminDialog } from "@/components/admin/create-admin-dialog";
 import { AdminActions } from "@/components/admin/admin-actions";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function TeamPage() {
   const session = await auth();
   

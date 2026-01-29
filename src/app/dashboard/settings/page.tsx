@@ -5,6 +5,8 @@ import { User, Shield, Bell, Palette, LogOut } from "lucide-react";
 import { ProfileForm } from "@/components/admin/profile-form";
 import { SignOutButton } from "@/components/admin/sign-out-button";
 
+export const dynamic = "force-dynamic";
+
 export default async function ModelSettingsPage() {
   const session = await auth();
   

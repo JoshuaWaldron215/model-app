@@ -3,6 +3,8 @@ import { Users, Film, MessageSquare, Megaphone, TrendingUp, Activity } from "luc
 import Link from "next/link";
 import { getAdminStats, getRecentModels } from "@/lib/cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
   const [stats, recentModels] = await Promise.all([
     getAdminStats(),

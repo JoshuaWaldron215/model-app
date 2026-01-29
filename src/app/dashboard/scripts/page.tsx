@@ -6,6 +6,8 @@ import { scriptCategoryLabels } from "@/lib/utils";
 import { ScriptCard } from "@/components/model/script-card";
 import { getModelScripts } from "@/lib/cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function ModelScriptsPage() {
   const session = await auth();
   const scripts = await getModelScripts(session!.user.id);

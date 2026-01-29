@@ -8,6 +8,8 @@ import { ModelActions } from "@/components/admin/model-actions";
 import { CreateModelDialog } from "@/components/admin/create-model-dialog";
 import { getAllModels } from "@/lib/cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function ModelsPage() {
   const models = await getAllModels();
 

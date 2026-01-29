@@ -6,6 +6,8 @@ import { reelCategoryLabels } from "@/lib/utils";
 import { ReelCard } from "@/components/model/reel-card";
 import { getModelReels } from "@/lib/cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function ModelReelsPage() {
   const session = await auth();
   const reels = await getModelReels(session!.user.id);

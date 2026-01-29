@@ -5,6 +5,8 @@ import { Megaphone, Pin } from "lucide-react";
 import { formatDateTime, formatRelativeTime } from "@/lib/utils";
 import { getModelAnnouncements } from "@/lib/cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function ModelAnnouncementsPage() {
   const session = await auth();
   const announcements = await getModelAnnouncements(session!.user.id);

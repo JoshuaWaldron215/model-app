@@ -7,6 +7,8 @@ import Link from "next/link";
 import { ContentActions } from "@/components/admin/content-actions";
 import { getReels } from "@/lib/cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function ReelsPage() {
   const reels = await getReels();
 

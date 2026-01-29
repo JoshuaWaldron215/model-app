@@ -4,6 +4,8 @@ import { Film, MessageSquare, Megaphone, Sparkles, ArrowRight } from "lucide-rea
 import Link from "next/link";
 import { getModelDashboardContent } from "@/lib/cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function ModelDashboard() {
   const session = await auth();
   const { reels, scripts, announcements } = await getModelDashboardContent(session!.user.id);
