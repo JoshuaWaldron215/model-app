@@ -18,11 +18,12 @@ import { UserRole, UserStatus } from "@prisma/client";
 import { NotificationDropdown } from "@/components/notification-dropdown";
 import { useMobileSidebar } from "@/components/mobile-sidebar-context";
 
-interface Announcement {
+interface Notification {
   id: string;
+  type: "announcement" | "reel" | "script";
   title: string;
-  body: string;
-  isPinned: boolean;
+  body?: string;
+  isPinned?: boolean;
   createdAt: Date | string;
 }
 
@@ -35,10 +36,10 @@ interface AdminHeaderProps {
     status: UserStatus;
     image?: string | null;
   };
-  announcements?: Announcement[];
+  notifications?: Notification[];
 }
 
-export function AdminHeader({ user, announcements = [] }: AdminHeaderProps) {
+export function AdminHeader({ user, notifications = [] }: AdminHeaderProps) {
   const { isOpen, toggle } = useMobileSidebar();
   
   return (
@@ -63,10 +64,7 @@ export function AdminHeader({ user, announcements = [] }: AdminHeaderProps) {
         {/* Actions */}
         <div className="flex items-center gap-x-2 sm:gap-x-4 lg:gap-x-6">
           {/* Notifications */}
-          <NotificationDropdown 
-            announcements={announcements} 
-            dashboardPath="/admin/announcements"
-          />
+          <NotificationDropdown notifications={notifications} isAdmin />
 
           {/* Separator */}
           <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-border" />

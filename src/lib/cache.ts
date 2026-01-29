@@ -27,16 +27,44 @@ export const getModels = unstable_cache(
   { revalidate: 60, tags: [CACHE_TAGS.models] }
 );
 
-// Cached announcements for notification dropdown
-export const getRecentAnnouncementsForModel = unstable_cache(
-  async (modelId: string) => {
-    return db.announcement.findMany({
+// Get all recent notifications for a model (reels, scripts, announcements)
+export async function getModelNotifications(modelId: string) {
+  const [reels, scripts, announcements] = await Promise.all([
+    db.content.findMany({
+      where: {
+        type: "REEL",
+        isActive: true,
+        OR: [{ isGlobal: true }, { assignments: { some: { modelId } } }],
+      },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+      },
+    }),
+    db.content.findMany({
+      where: {
+        type: "SCRIPT",
+        isActive: true,
+        OR: [{ isGlobal: true }, { assignments: { some: { modelId } } }],
+      },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+      },
+    }),
+    db.announcement.findMany({
       where: {
         isActive: true,
         OR: [{ isGlobal: true }, { tags: { some: { modelId } } }],
       },
       orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
-      take: 10,
+      take: 5,
       select: {
         id: true,
         title: true,
@@ -44,18 +72,65 @@ export const getRecentAnnouncementsForModel = unstable_cache(
         isPinned: true,
         createdAt: true,
       },
-    });
-  },
-  ["model-announcements"],
-  { revalidate: 30, tags: [CACHE_TAGS.announcements] }
-);
+    }),
+  ]);
 
-export const getRecentAnnouncementsForAdmin = unstable_cache(
-  async () => {
-    return db.announcement.findMany({
-      where: { isActive: true },
+  // Combine and format
+  const notifications = [
+    ...reels.map(r => ({
+      id: `reel-${r.id}`,
+      type: "reel" as const,
+      title: r.title,
+      createdAt: r.createdAt,
+    })),
+    ...scripts.map(s => ({
+      id: `script-${s.id}`,
+      type: "script" as const,
+      title: s.title,
+      createdAt: s.createdAt,
+    })),
+    ...announcements.map(a => ({
+      id: `announcement-${a.id}`,
+      type: "announcement" as const,
+      title: a.title,
+      body: a.body,
+      isPinned: a.isPinned,
+      createdAt: a.createdAt,
+    })),
+  ];
+
+  // Sort by date, most recent first
+  return notifications.sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+}
+
+// Get all recent notifications for admin (reels, scripts, announcements)
+export async function getAdminNotifications() {
+  const [reels, scripts, announcements] = await Promise.all([
+    db.content.findMany({
+      where: { type: "REEL" },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+      },
+    }),
+    db.content.findMany({
+      where: { type: "SCRIPT" },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+      },
+    }),
+    db.announcement.findMany({
       orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
-      take: 10,
+      take: 5,
       select: {
         id: true,
         title: true,
@@ -63,11 +138,38 @@ export const getRecentAnnouncementsForAdmin = unstable_cache(
         isPinned: true,
         createdAt: true,
       },
-    });
-  },
-  ["admin-announcements"],
-  { revalidate: 30, tags: [CACHE_TAGS.announcements] }
-);
+    }),
+  ]);
+
+  // Combine and format
+  const notifications = [
+    ...reels.map(r => ({
+      id: `reel-${r.id}`,
+      type: "reel" as const,
+      title: r.title,
+      createdAt: r.createdAt,
+    })),
+    ...scripts.map(s => ({
+      id: `script-${s.id}`,
+      type: "script" as const,
+      title: s.title,
+      createdAt: s.createdAt,
+    })),
+    ...announcements.map(a => ({
+      id: `announcement-${a.id}`,
+      type: "announcement" as const,
+      title: a.title,
+      body: a.body,
+      isPinned: a.isPinned,
+      createdAt: a.createdAt,
+    })),
+  ];
+
+  // Sort by date, most recent first
+  return notifications.sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+}
 
 // Cached stats for admin dashboard
 export const getAdminStats = unstable_cache(

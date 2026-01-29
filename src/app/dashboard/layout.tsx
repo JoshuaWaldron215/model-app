@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { getRecentAnnouncementsForModel } from "@/lib/cache";
+import { getModelNotifications } from "@/lib/cache";
 import { ModelSidebar } from "@/components/model/sidebar";
 import { ModelHeader } from "@/components/model/header";
 import { RealtimeProvider } from "@/components/realtime-provider";
@@ -27,14 +27,14 @@ export default async function DashboardLayout({
     redirect("/suspended");
   }
 
-  const announcements = await getRecentAnnouncementsForModel(session.user.id);
+  const notifications = await getModelNotifications(session.user.id);
 
   return (
     <MobileSidebarProvider>
       <div className="min-h-screen bg-background">
         <ModelSidebar />
         <div className="lg:pl-72">
-          <ModelHeader user={session.user} announcements={announcements} />
+          <ModelHeader user={session.user} notifications={notifications} />
           <main className="p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8">
             <RealtimeProvider>
               <div className="page-transition">{children}</div>
