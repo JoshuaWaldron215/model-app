@@ -122,22 +122,22 @@ export default async function SettingsPage() {
                 <div>
                   <p className="font-medium">Push Notifications</p>
                   <p className="text-sm text-muted-foreground">
-                    Receive notifications on your device
+                    Models receive push notifications when you post new content or announcements
                   </p>
                 </div>
-                <div className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                  Coming soon
+                <div className="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-sm font-medium">
+                  Active
                 </div>
               </div>
               <div className="flex items-center justify-between p-4 rounded-xl bg-secondary/30">
                 <div>
-                  <p className="font-medium">Email Notifications</p>
+                  <p className="font-medium">Real-time Updates</p>
                   <p className="text-sm text-muted-foreground">
-                    Get updates via email
+                    Dashboards update instantly when content changes
                   </p>
                 </div>
-                <div className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                  Coming soon
+                <div className="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-sm font-medium">
+                  Active
                 </div>
               </div>
             </div>

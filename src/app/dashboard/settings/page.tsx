@@ -88,7 +88,7 @@ export default async function ModelSettingsPage() {
               Notifications
             </CardTitle>
             <CardDescription>
-              Configure how you receive notifications
+              Stay updated with new content and announcements
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -97,13 +97,16 @@ export default async function ModelSettingsPage() {
                 <div>
                   <p className="font-medium">Push Notifications</p>
                   <p className="text-sm text-muted-foreground">
-                    Get notified about new content and announcements
+                    Get notified when new reels, scripts, or announcements are posted
                   </p>
                 </div>
-                <div className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                  Coming soon
+                <div className="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-sm font-medium">
+                  Enabled
                 </div>
               </div>
+              <p className="text-xs text-muted-foreground">
+                💡 Tip: Allow notifications in your browser when prompted to receive updates even when the app is closed.
+              </p>
             </div>
           </CardContent>
         </Card>
