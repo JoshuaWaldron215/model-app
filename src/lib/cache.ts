@@ -203,90 +203,74 @@ export const getAnnouncements = unstable_cache(
   { revalidate: 30, tags: [CACHE_TAGS.announcements] }
 );
 
-// Cached model content
-export const getModelReels = unstable_cache(
-  async (modelId: string) => {
-    return db.content.findMany({
+// Model content - no cache to ensure fresh data per model
+export async function getModelReels(modelId: string) {
+  return db.content.findMany({
+    where: {
+      type: "REEL",
+      isActive: true,
+      OR: [{ isGlobal: true }, { assignments: { some: { modelId } } }],
+    },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getModelScripts(modelId: string) {
+  return db.content.findMany({
+    where: {
+      type: "SCRIPT",
+      isActive: true,
+      OR: [{ isGlobal: true }, { assignments: { some: { modelId } } }],
+    },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getModelAnnouncements(modelId: string) {
+  return db.announcement.findMany({
+    where: {
+      isActive: true,
+      OR: [{ isGlobal: true }, { tags: { some: { modelId } } }],
+    },
+    orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
+    include: {
+      createdBy: {
+        select: { name: true },
+      },
+    },
+  });
+}
+
+// Model dashboard content - fresh data per model
+export async function getModelDashboardContent(modelId: string) {
+  const [reels, scripts, announcements] = await Promise.all([
+    db.content.findMany({
       where: {
         type: "REEL",
         isActive: true,
         OR: [{ isGlobal: true }, { assignments: { some: { modelId } } }],
       },
       orderBy: { createdAt: "desc" },
-    });
-  },
-  ["model-reels"],
-  { revalidate: 30, tags: [CACHE_TAGS.reels] }
-);
-
-export const getModelScripts = unstable_cache(
-  async (modelId: string) => {
-    return db.content.findMany({
+      take: 3,
+    }),
+    db.content.findMany({
       where: {
         type: "SCRIPT",
         isActive: true,
         OR: [{ isGlobal: true }, { assignments: { some: { modelId } } }],
       },
       orderBy: { createdAt: "desc" },
-    });
-  },
-  ["model-scripts"],
-  { revalidate: 30, tags: [CACHE_TAGS.scripts] }
-);
-
-export const getModelAnnouncements = unstable_cache(
-  async (modelId: string) => {
-    return db.announcement.findMany({
+      take: 3,
+    }),
+    db.announcement.findMany({
       where: {
         isActive: true,
         OR: [{ isGlobal: true }, { tags: { some: { modelId } } }],
       },
       orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
-      include: {
-        createdBy: {
-          select: { name: true },
-        },
-      },
-    });
-  },
-  ["model-announcements-list"],
-  { revalidate: 30, tags: [CACHE_TAGS.announcements] }
-);
+      take: 3,
+    }),
+  ]);
 
-// Cached model dashboard content
-export const getModelDashboardContent = unstable_cache(
-  async (modelId: string) => {
-    const [reels, scripts, announcements] = await Promise.all([
-      db.content.findMany({
-        where: {
-          type: "REEL",
-          isActive: true,
-          OR: [{ isGlobal: true }, { assignments: { some: { modelId } } }],
-        },
-        orderBy: { createdAt: "desc" },
-        take: 3,
-      }),
-      db.content.findMany({
-        where: {
-          type: "SCRIPT",
-          isActive: true,
-          OR: [{ isGlobal: true }, { assignments: { some: { modelId } } }],
-        },
-        orderBy: { createdAt: "desc" },
-        take: 3,
-      }),
-      db.announcement.findMany({
-        where: {
-          isActive: true,
-          OR: [{ isGlobal: true }, { tags: { some: { modelId } } }],
-        },
-        orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
-        take: 3,
-      }),
-    ]);
-
-    return { reels, scripts, announcements };
-  },
-  ["model-dashboard"],
-  { revalidate: 30, tags: [CACHE_TAGS.reels, CACHE_TAGS.scripts, CACHE_TAGS.announcements] }
-);
+  return { reels, scripts, announcements };
+}

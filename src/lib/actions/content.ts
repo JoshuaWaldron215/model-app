@@ -125,6 +125,8 @@ export async function createReel(formData: FormData) {
   }
 
   revalidatePath("/admin/content/reels");
+  revalidatePath("/dashboard/reels");
+  revalidatePath("/dashboard");
   return { success: true, id: reel.id };
 }
 
@@ -184,6 +186,8 @@ export async function updateReel(formData: FormData) {
 
   revalidatePath("/admin/content/reels");
   revalidatePath(`/admin/content/reels/${id}`);
+  revalidatePath("/dashboard/reels");
+  revalidatePath("/dashboard");
   return { success: true };
 }
 
@@ -258,6 +262,8 @@ export async function createScript(formData: FormData) {
   }
 
   revalidatePath("/admin/content/scripts");
+  revalidatePath("/dashboard/scripts");
+  revalidatePath("/dashboard");
   return { success: true, id: script.id };
 }
 
@@ -305,6 +311,8 @@ export async function updateScript(formData: FormData) {
 
   revalidatePath("/admin/content/scripts");
   revalidatePath(`/admin/content/scripts/${id}`);
+  revalidatePath("/dashboard/scripts");
+  revalidatePath("/dashboard");
   return { success: true };
 }
 
@@ -325,8 +333,11 @@ export async function deleteContent(contentId: string) {
     where: { id: contentId },
   });
 
-  const path = content.type === "REEL" ? "/admin/content/reels" : "/admin/content/scripts";
-  revalidatePath(path);
+  const adminPath = content.type === "REEL" ? "/admin/content/reels" : "/admin/content/scripts";
+  const dashPath = content.type === "REEL" ? "/dashboard/reels" : "/dashboard/scripts";
+  revalidatePath(adminPath);
+  revalidatePath(dashPath);
+  revalidatePath("/dashboard");
   return { success: true };
 }
 
@@ -350,8 +361,11 @@ export async function toggleContentStatus(contentId: string) {
     data: { isActive: newStatus },
   });
 
-  const path = content.type === "REEL" ? "/admin/content/reels" : "/admin/content/scripts";
-  revalidatePath(path);
+  const adminPath = content.type === "REEL" ? "/admin/content/reels" : "/admin/content/scripts";
+  const dashPath = content.type === "REEL" ? "/dashboard/reels" : "/dashboard/scripts";
+  revalidatePath(adminPath);
+  revalidatePath(dashPath);
+  revalidatePath("/dashboard");
   return { success: true, isActive: newStatus };
 }
 
