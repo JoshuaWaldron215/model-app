@@ -2,10 +2,9 @@
 
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { CACHE_TAGS } from "@/lib/cache";
 
 // Validation schemas
 const createModelSchema = z.object({
@@ -69,8 +68,6 @@ export async function createModel(formData: FormData) {
   });
 
   revalidatePath("/admin/models");
-  revalidateTag(CACHE_TAGS.models);
-  revalidateTag(CACHE_TAGS.stats);
   return { success: true };
 }
 
@@ -124,7 +121,6 @@ export async function updateModel(formData: FormData) {
 
   revalidatePath("/admin/models");
   revalidatePath(`/admin/models/${validated.data.id}`);
-  revalidateTag(CACHE_TAGS.models);
   return { success: true };
 }
 
@@ -149,7 +145,6 @@ export async function toggleModelStatus(modelId: string) {
   });
 
   revalidatePath("/admin/models");
-  revalidateTag(CACHE_TAGS.models);
   return { success: true, status: newStatus };
 }
 
@@ -171,8 +166,6 @@ export async function deleteModel(modelId: string) {
   });
 
   revalidatePath("/admin/models");
-  revalidateTag(CACHE_TAGS.models);
-  revalidateTag(CACHE_TAGS.stats);
   return { success: true };
 }
 

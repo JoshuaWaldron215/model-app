@@ -2,11 +2,10 @@
 
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { ReelCategory, ScriptCategory } from "@prisma/client";
 import { getPusherServer, CHANNELS, EVENTS } from "@/lib/pusher";
-import { CACHE_TAGS } from "@/lib/cache";
 import { sendNotificationToUsers, sendNotificationToAllModels } from "./push-notifications";
 
 // Validation schemas
@@ -126,8 +125,6 @@ export async function createReel(formData: FormData) {
   }
 
   revalidatePath("/admin/content/reels");
-  revalidateTag(CACHE_TAGS.reels);
-  revalidateTag(CACHE_TAGS.stats);
   return { success: true, id: reel.id };
 }
 
@@ -187,7 +184,6 @@ export async function updateReel(formData: FormData) {
 
   revalidatePath("/admin/content/reels");
   revalidatePath(`/admin/content/reels/${id}`);
-  revalidateTag(CACHE_TAGS.reels);
   return { success: true };
 }
 
@@ -262,8 +258,6 @@ export async function createScript(formData: FormData) {
   }
 
   revalidatePath("/admin/content/scripts");
-  revalidateTag(CACHE_TAGS.scripts);
-  revalidateTag(CACHE_TAGS.stats);
   return { success: true, id: script.id };
 }
 
@@ -311,7 +305,6 @@ export async function updateScript(formData: FormData) {
 
   revalidatePath("/admin/content/scripts");
   revalidatePath(`/admin/content/scripts/${id}`);
-  revalidateTag(CACHE_TAGS.scripts);
   return { success: true };
 }
 
@@ -334,8 +327,6 @@ export async function deleteContent(contentId: string) {
 
   const path = content.type === "REEL" ? "/admin/content/reels" : "/admin/content/scripts";
   revalidatePath(path);
-  revalidateTag(content.type === "REEL" ? CACHE_TAGS.reels : CACHE_TAGS.scripts);
-  revalidateTag(CACHE_TAGS.stats);
   return { success: true };
 }
 
@@ -361,7 +352,6 @@ export async function toggleContentStatus(contentId: string) {
 
   const path = content.type === "REEL" ? "/admin/content/reels" : "/admin/content/scripts";
   revalidatePath(path);
-  revalidateTag(content.type === "REEL" ? CACHE_TAGS.reels : CACHE_TAGS.scripts);
   return { success: true, isActive: newStatus };
 }
 

@@ -2,10 +2,9 @@
 
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getPusherServer, CHANNELS, EVENTS } from "@/lib/pusher";
-import { CACHE_TAGS } from "@/lib/cache";
 import { sendNotificationToUsers, sendNotificationToAllModels } from "./push-notifications";
 
 // Validation schema
@@ -94,8 +93,8 @@ export async function createAnnouncement(formData: FormData) {
 
   revalidatePath("/admin/announcements");
   revalidatePath("/dashboard/announcements");
-  revalidateTag(CACHE_TAGS.announcements);
-  revalidateTag(CACHE_TAGS.stats);
+  revalidatePath("/admin");
+  revalidatePath("/dashboard");
   return { success: true, id: announcement.id };
 }
 
@@ -142,7 +141,6 @@ export async function updateAnnouncement(formData: FormData) {
   revalidatePath("/admin/announcements");
   revalidatePath(`/admin/announcements/${id}`);
   revalidatePath("/dashboard/announcements");
-  revalidateTag(CACHE_TAGS.announcements);
   return { success: true };
 }
 
@@ -168,7 +166,6 @@ export async function toggleAnnouncementPin(announcementId: string) {
 
   revalidatePath("/admin/announcements");
   revalidatePath("/dashboard/announcements");
-  revalidateTag(CACHE_TAGS.announcements);
   return { success: true, isPinned: newStatus };
 }
 
@@ -182,8 +179,7 @@ export async function deleteAnnouncement(announcementId: string) {
 
   revalidatePath("/admin/announcements");
   revalidatePath("/dashboard/announcements");
-  revalidateTag(CACHE_TAGS.announcements);
-  revalidateTag(CACHE_TAGS.stats);
+  revalidatePath("/admin");
   return { success: true };
 }
 
