@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Film, MessageSquare, Megaphone, TrendingUp, Activity } from "lucide-react";
+import { Users, Film, MessageSquare, Megaphone, TrendingUp, Activity, CalendarDays, ListTodo, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { getAdminStats, getRecentModels } from "@/lib/cache";
 
@@ -171,6 +171,51 @@ export default async function AdminDashboard() {
                   <p className="font-medium">Post Announcement</p>
                   <p className="text-sm text-muted-foreground">
                     Notify all or selected models
+                  </p>
+                </div>
+              </Link>
+              <Link
+                href="/admin/pool"
+                prefetch={true}
+                className="flex items-center gap-3 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors active:scale-[0.98]"
+              >
+                <div className="p-2 rounded-lg bg-blue-500/10">
+                  <CalendarDays className="h-4 w-4 text-blue-500" />
+                </div>
+                <div>
+                  <p className="font-medium">Daily TikTok Pool</p>
+                  <p className="text-sm text-muted-foreground">
+                    Manage daily content pools
+                  </p>
+                </div>
+              </Link>
+              <Link
+                href="/admin/tasks"
+                prefetch={true}
+                className="flex items-center gap-3 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors active:scale-[0.98]"
+              >
+                <div className="p-2 rounded-lg bg-purple-500/10">
+                  <ListTodo className="h-4 w-4 text-purple-500" />
+                </div>
+                <div>
+                  <p className="font-medium">Team Tasks</p>
+                  <p className="text-sm text-muted-foreground">
+                    Manage team task list
+                  </p>
+                </div>
+              </Link>
+              <Link
+                href="/admin/guidance"
+                prefetch={true}
+                className="flex items-center gap-3 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors active:scale-[0.98]"
+              >
+                <div className="p-2 rounded-lg bg-emerald-500/10">
+                  <BookOpen className="h-4 w-4 text-emerald-500" />
+                </div>
+                <div>
+                  <p className="font-medium">New Creator Guidance</p>
+                  <p className="text-sm text-muted-foreground">
+                    Edit guidance for new models
                   </p>
                 </div>
               </Link>
