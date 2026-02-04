@@ -18,6 +18,7 @@ import { createReel, updateReel } from "@/lib/actions/content";
 import { toast } from "sonner";
 import { ReelCategory } from "@prisma/client";
 import { reelCategoryLabels } from "@/lib/utils";
+import { VideoUpload } from "@/components/video-upload";
 
 interface ReelFormProps {
   models: Array<{ id: string; name: string; email: string }>;
@@ -45,6 +46,7 @@ export function ReelForm({ models, reel }: ReelFormProps) {
   const [selectedModels, setSelectedModels] = useState<Set<string>>(
     new Set(reel?.assignedModels ?? [])
   );
+  const [videoUrl, setVideoUrl] = useState<string | null>(reel?.videoUrl || null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -52,6 +54,7 @@ export function ReelForm({ models, reel }: ReelFormProps) {
 
     const formData = new FormData(e.currentTarget);
     formData.set("isGlobal", isGlobal.toString());
+    formData.set("videoUrl", videoUrl || "");
     
     // Clear and re-add selected models
     formData.delete("assignedModels");
@@ -146,49 +149,45 @@ export function ReelForm({ models, reel }: ReelFormProps) {
         </div>
       </div>
 
-      {/* Media */}
+      {/* Video Upload */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-          <Music className="h-4 w-4" />
-          Media
+          <Film className="h-4 w-4" />
+          Video File
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="videoUrl">TikTok / Instagram URL</Label>
-          <Input
-            id="videoUrl"
-            name="videoUrl"
-            defaultValue={reel?.videoUrl || ""}
-            placeholder="https://www.tiktok.com/@user/video/... or https://www.instagram.com/reel/..."
+          <Label>Upload Video *</Label>
+          <VideoUpload
+            value={videoUrl}
+            onChange={setVideoUrl}
             disabled={isLoading}
           />
           <p className="text-xs text-muted-foreground">
-            Paste a TikTok or Instagram Reel URL for inspiration
+            Upload the video file. Models will only see the video, not the original source.
           </p>
         </div>
+      </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="audioUrl">Audio File URL (optional)</Label>
-            <Input
-              id="audioUrl"
-              name="audioUrl"
-              defaultValue={reel?.audioUrl || ""}
-              placeholder="https://example.com/audio.mp3"
-              disabled={isLoading}
-            />
-          </div>
+      {/* Sound Link */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+          <Music className="h-4 w-4" />
+          Sound Link
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="audioLinkUrl">Sound Link (optional)</Label>
-            <Input
-              id="audioLinkUrl"
-              name="audioLinkUrl"
-              defaultValue={reel?.audioLinkUrl || ""}
-              placeholder="TikTok/Instagram sound link"
-              disabled={isLoading}
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="audioLinkUrl">TikTok Sound URL</Label>
+          <Input
+            id="audioLinkUrl"
+            name="audioLinkUrl"
+            defaultValue={reel?.audioLinkUrl || ""}
+            placeholder="https://www.tiktok.com/music/..."
+            disabled={isLoading}
+          />
+          <p className="text-xs text-muted-foreground">
+            Paste the TikTok sound link that models should use for this reel
+          </p>
         </div>
       </div>
 
@@ -240,16 +239,16 @@ export function ReelForm({ models, reel }: ReelFormProps) {
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
           <MessageSquare className="h-4 w-4" />
-          Admin Instructions
+          Instructions for Models
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="instructions">Instructions for Models</Label>
+          <Label htmlFor="instructions">Instructions</Label>
           <Textarea
             id="instructions"
             name="instructions"
             defaultValue={reel?.instructions || ""}
-            placeholder="Additional notes or instructions for the models..."
+            placeholder="Tell models how to recreate this reel, any specific notes..."
             disabled={isLoading}
             className="min-h-[100px]"
           />
@@ -394,7 +393,7 @@ export function ReelForm({ models, reel }: ReelFormProps) {
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" disabled={isLoading || !videoUrl}>
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
