@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { ModelTier } from "@prisma/client";
 
 // Validation schemas
 const createModelSchema = z.object({
@@ -18,6 +19,7 @@ const updateModelSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().optional(),
+  modelTier: z.nativeEnum(ModelTier).optional(),
 });
 
 // Helper to check admin access
@@ -75,11 +77,14 @@ export async function createModel(formData: FormData) {
 export async function updateModel(formData: FormData) {
   await requireAdmin();
 
+  const modelTierValue = formData.get("modelTier") as string;
+  
   const data = {
     id: formData.get("id") as string,
     name: formData.get("name") as string,
     email: formData.get("email") as string,
     password: formData.get("password") as string || undefined,
+    modelTier: modelTierValue ? (modelTierValue as ModelTier) : undefined,
   };
 
   const validated = updateModelSchema.safeParse(data);
@@ -104,6 +109,7 @@ export async function updateModel(formData: FormData) {
     name: string;
     email: string;
     password?: string;
+    modelTier?: ModelTier;
   } = {
     name: validated.data.name,
     email: validated.data.email,
@@ -112,6 +118,11 @@ export async function updateModel(formData: FormData) {
   // Only update password if provided
   if (validated.data.password && validated.data.password.length >= 6) {
     updateData.password = await bcrypt.hash(validated.data.password, 12);
+  }
+
+  // Update model tier if provided
+  if (validated.data.modelTier) {
+    updateData.modelTier = validated.data.modelTier;
   }
 
   await db.user.update({

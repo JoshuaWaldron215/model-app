@@ -12,28 +12,38 @@ import {
   Heart,
   Loader2,
   Settings,
+  BookOpen,
 } from "lucide-react";
 import { useMobileSidebar } from "@/components/mobile-sidebar-context";
 import { useEffect, useState, useTransition } from "react";
 
-const navigation = [
+interface ModelSidebarProps {
+  showGuidance?: boolean;
+}
+
+const baseNavigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Reels", href: "/dashboard/reels", icon: Film },
   { name: "Scripts", href: "/dashboard/scripts", icon: MessageSquare },
   { name: "News", href: "/dashboard/announcements", icon: Megaphone },
 ];
 
-const fullNavigation = [
-  ...navigation,
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
-];
+const guidanceItem = { name: "Guidance", href: "/dashboard/guidance", icon: BookOpen };
+const settingsItem = { name: "Settings", href: "/dashboard/settings", icon: Settings };
 
-export function ModelSidebar() {
+export function ModelSidebar({ showGuidance = false }: ModelSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { isOpen, close } = useMobileSidebar();
   const [isPending, startTransition] = useTransition();
   const [pendingPath, setPendingPath] = useState<string | null>(null);
+
+  // Build navigation based on user tier
+  const navigation = showGuidance 
+    ? [...baseNavigation, guidanceItem]
+    : baseNavigation;
+  
+  const fullNavigation = [...navigation, settingsItem];
 
   // Close sidebar on route change
   useEffect(() => {
@@ -107,7 +117,8 @@ export function ModelSidebar() {
                         "group flex gap-x-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors",
                         isActive
                           ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                        item.name === "Guidance" && !isActive && "text-primary/80 hover:text-primary"
                       )}
                     >
                       <item.icon
@@ -115,10 +126,16 @@ export function ModelSidebar() {
                           "h-5 w-5 shrink-0",
                           isActive
                             ? "text-primary-foreground"
-                            : "text-muted-foreground group-hover:text-foreground"
+                            : "text-muted-foreground group-hover:text-foreground",
+                          item.name === "Guidance" && !isActive && "text-primary/80"
                         )}
                       />
                       {item.name}
+                      {item.name === "Guidance" && !isActive && (
+                        <span className="ml-auto text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded">
+                          NEW
+                        </span>
+                      )}
                     </Link>
                   </li>
                 );
@@ -172,7 +189,8 @@ export function ModelSidebar() {
                         "group flex gap-x-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                         isActive
                           ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                        item.name === "Guidance" && !isActive && "text-primary/80 hover:text-primary"
                       )}
                     >
                       <item.icon
@@ -180,10 +198,16 @@ export function ModelSidebar() {
                           "h-5 w-5 shrink-0",
                           isActive
                             ? "text-primary-foreground"
-                            : "text-muted-foreground group-hover:text-foreground"
+                            : "text-muted-foreground group-hover:text-foreground",
+                          item.name === "Guidance" && !isActive && "text-primary/80"
                         )}
                       />
                       {item.name}
+                      {item.name === "Guidance" && !isActive && (
+                        <span className="ml-auto text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded">
+                          NEW
+                        </span>
+                      )}
                     </Link>
                   </li>
                 );
@@ -218,10 +242,11 @@ export function ModelSidebar() {
                 key={item.name}
                 onClick={() => handleMobileNav(item.href)}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-0.5 px-4 py-2 rounded-xl min-w-[60px] touch-manipulation",
+                  "flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-xl min-w-[56px] touch-manipulation",
                   isActive || isLoading
                     ? "text-primary bg-primary/10"
-                    : "text-muted-foreground active:bg-secondary"
+                    : "text-muted-foreground active:bg-secondary",
+                  item.name === "Guidance" && !isActive && "text-primary/80"
                 )}
               >
                 {isLoading ? (

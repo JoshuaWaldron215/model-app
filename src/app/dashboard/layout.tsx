@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
 import { getModelNotifications } from "@/lib/cache";
 import { ModelSidebar } from "@/components/model/sidebar";
 import { ModelHeader } from "@/components/model/header";
@@ -27,12 +28,19 @@ export default async function DashboardLayout({
     redirect("/suspended");
   }
 
+  // Get user's tier for sidebar navigation
+  const user = await db.user.findUnique({
+    where: { id: session.user.id },
+    select: { modelTier: true },
+  });
+
   const notifications = await getModelNotifications(session.user.id);
+  const isNewCreator = user?.modelTier === "NEW_CREATOR";
 
   return (
     <MobileSidebarProvider>
       <div className="min-h-screen bg-background">
-        <ModelSidebar />
+        <ModelSidebar showGuidance={isNewCreator} />
         <div className="lg:pl-72">
           <ModelHeader user={session.user} notifications={notifications} />
           <main className="p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8">

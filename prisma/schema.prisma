@@ -21,6 +21,11 @@ enum UserStatus {
   PENDING
 }
 
+enum ModelTier {
+  NEW_CREATOR
+  ESTABLISHED
+}
+
 model User {
   id             String     @id @default(cuid())
   email          String     @unique
@@ -28,6 +33,7 @@ model User {
   name           String
   role           UserRole   @default(MODEL)
   status         UserStatus @default(ACTIVE)
+  modelTier      ModelTier? @default(NEW_CREATOR)  // Only for MODEL role
   avatarUrl      String?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
@@ -208,4 +214,17 @@ model PushSubscription {
 
   @@index([userId])
   @@map("push_subscriptions")
+}
+
+// ==================== GUIDANCE PAGE ====================
+
+model GuidancePage {
+  id          String   @id @default(cuid())
+  slug        String   @unique @default("new-creator")
+  title       String   @default("New Creator Guidance")
+  content     String   @db.Text
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+
+  @@map("guidance_pages")
 }

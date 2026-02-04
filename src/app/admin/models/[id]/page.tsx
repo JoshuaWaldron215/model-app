@@ -23,6 +23,7 @@ async function getModel(id: string) {
       name: true,
       email: true,
       status: true,
+      modelTier: true,
       avatarUrl: true,
       createdAt: true,
       _count: {

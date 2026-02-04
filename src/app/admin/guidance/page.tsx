@@ -1,0 +1,57 @@
+export const dynamic = "force-dynamic";
+
+import { getGuidancePage } from "@/lib/actions/guidance";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { BookOpen, Sparkles } from "lucide-react";
+import { GuidanceEditor } from "@/components/admin/guidance-editor";
+
+export default async function AdminGuidancePage() {
+  const guidancePage = await getGuidancePage();
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+          <BookOpen className="h-8 w-8 text-primary" />
+          New Creator Guidance
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          Edit the guidance page content shown to new creators
+        </p>
+      </div>
+
+      {/* Info Banner */}
+      <div className="rounded-xl bg-primary/5 border border-primary/20 p-4">
+        <div className="flex items-start gap-3">
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Sparkles className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h3 className="font-medium">Who sees this?</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              This page is only visible to models with the <strong>New Creator</strong> tier. 
+              You can change a model&apos;s tier in their profile settings.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Editor Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Page Content</CardTitle>
+          <CardDescription>
+            Use Markdown formatting for headers, lists, bold text, etc.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <GuidanceEditor 
+            initialTitle={guidancePage.title}
+            initialContent={guidancePage.content}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
