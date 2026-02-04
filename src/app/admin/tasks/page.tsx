@@ -145,7 +145,7 @@ export default async function AdminTasksPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <TaskList tasks={tasks} />
+          <TaskList tasks={tasks} serverTime={Date.now()} />
         </CardContent>
       </Card>
     </div>

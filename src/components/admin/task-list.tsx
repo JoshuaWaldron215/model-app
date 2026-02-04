@@ -52,6 +52,7 @@ interface Task {
 
 interface TaskListProps {
   tasks: Task[];
+  serverTime: number;
 }
 
 const priorityConfig: Record<TaskPriority, { label: string; color: string; bgColor: string }> = {
@@ -67,7 +68,7 @@ const statusConfig: Record<TaskStatus, { label: string; icon: typeof Circle; col
   COMPLETED: { label: "Completed", icon: CheckCircle2, color: "text-green-500" },
 };
 
-export function TaskList({ tasks }: TaskListProps) {
+export function TaskList({ tasks, serverTime }: TaskListProps) {
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -104,10 +105,10 @@ export function TaskList({ tasks }: TaskListProps) {
     setDeletingId(null);
   }
 
-  // Check if task is overdue
+  // Check if task is overdue (use server time to avoid hydration mismatch)
   const isOverdue = (task: Task) => {
     if (task.status === "COMPLETED" || !task.dueDate) return false;
-    return new Date(task.dueDate) < new Date();
+    return new Date(task.dueDate).getTime() < serverTime;
   };
 
   if (tasks.length === 0) {
