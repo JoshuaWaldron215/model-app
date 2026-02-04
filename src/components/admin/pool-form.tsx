@@ -46,22 +46,26 @@ export function PoolForm({ pool }: PoolFormProps) {
       formData.append("id", pool.id);
     }
 
-    const action = pool ? updatePool : createPool;
-    const result = await action(formData);
-
-    if (result.error) {
-      toast.error(result.error);
-      setIsLoading(false);
-      return;
-    }
-
-    toast.success(pool ? "Pool updated!" : "Pool created!");
-    
-    if (!pool && result.poolId) {
-      // Redirect to edit page to add videos
-      router.push(`/admin/pool/${result.poolId}`);
-    } else {
+    if (pool) {
+      const result = await updatePool(formData);
+      if (result.error) {
+        toast.error(result.error);
+        setIsLoading(false);
+        return;
+      }
+      toast.success("Pool updated!");
       router.refresh();
+    } else {
+      const result = await createPool(formData);
+      if (result.error) {
+        toast.error(result.error);
+        setIsLoading(false);
+        return;
+      }
+      toast.success("Pool created!");
+      if (result.poolId) {
+        router.push(`/admin/pool/${result.poolId}`);
+      }
     }
     
     setIsLoading(false);
