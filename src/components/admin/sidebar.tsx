@@ -13,6 +13,7 @@ import {
   Sparkles,
   Loader2,
   BookOpen,
+  Calendar,
 } from "lucide-react";
 import { useMobileSidebar } from "@/components/mobile-sidebar-context";
 import { useEffect, useState, useTransition } from "react";
@@ -22,6 +23,7 @@ const navigation = [
   { name: "Models", href: "/admin/models", icon: Users },
   { name: "Reels", href: "/admin/content/reels", icon: Film },
   { name: "Scripts", href: "/admin/content/scripts", icon: MessageSquare },
+  { name: "Pool", href: "/admin/pool", icon: Calendar },
   { name: "News", href: "/admin/announcements", icon: Megaphone },
   { name: "Guidance", href: "/admin/guidance", icon: BookOpen },
 ];

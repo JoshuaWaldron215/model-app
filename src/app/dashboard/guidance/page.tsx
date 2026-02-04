@@ -3,10 +3,40 @@ export const dynamic = "force-dynamic";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { getGuidancePage } from "@/lib/actions/guidance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+
+async function getGuidancePageContent() {
+  let page = await db.guidancePage.findUnique({
+    where: { slug: "new-creator" },
+  });
+
+  if (!page) {
+    page = await db.guidancePage.create({
+      data: {
+        slug: "new-creator",
+        title: "New Creator Guidance",
+        content: `# Welcome to the Team! 🎉
+
+We're excited to have you on board! This guide will help you get started.
+
+## Getting Started
+
+1. **Set up your profile** - Upload a profile picture
+2. **Check your reels** - Review content assigned to you
+3. **Read the scripts** - Familiarize yourself with messaging
+
+## Need Help?
+
+Reach out to your manager if you have any questions!
+`,
+      },
+    });
+  }
+
+  return page;
+}
 
 export default async function ModelGuidancePage() {
   const session = await auth();
@@ -26,7 +56,7 @@ export default async function ModelGuidancePage() {
     redirect("/dashboard");
   }
 
-  const guidancePage = await getGuidancePage();
+  const guidancePage = await getGuidancePageContent();
 
   return (
     <div className="space-y-6">

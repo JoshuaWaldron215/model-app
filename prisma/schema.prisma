@@ -228,3 +228,38 @@ model GuidancePage {
 
   @@map("guidance_pages")
 }
+
+// ==================== DAILY TIKTOK POOL ====================
+
+model DailyPool {
+  id        String      @id @default(cuid())
+  date      DateTime    @db.Date
+  title     String
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // Relations
+  videos    PoolVideo[]
+
+  @@unique([date])
+  @@index([isActive])
+  @@map("daily_pools")
+}
+
+model PoolVideo {
+  id        String    @id @default(cuid())
+  title     String
+  videoUrl  String    // Uploaded video URL
+  soundUrl  String?   // TikTok sound link
+  notes     String?   @db.Text
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  // Relations
+  pool      DailyPool @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  poolId    String
+
+  @@index([poolId])
+  @@map("pool_videos")
+}

@@ -13,6 +13,7 @@ import {
   Loader2,
   Settings,
   BookOpen,
+  Calendar,
 } from "lucide-react";
 import { useMobileSidebar } from "@/components/mobile-sidebar-context";
 import { useEffect, useState, useTransition } from "react";
@@ -25,6 +26,7 @@ const baseNavigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Reels", href: "/dashboard/reels", icon: Film },
   { name: "Scripts", href: "/dashboard/scripts", icon: MessageSquare },
+  { name: "Pool", href: "/dashboard/pool", icon: Calendar },
   { name: "News", href: "/dashboard/announcements", icon: Megaphone },
 ];
 
