@@ -14,12 +14,14 @@ import {
   Loader2,
   BookOpen,
   Calendar,
+  ListTodo,
 } from "lucide-react";
 import { useMobileSidebar } from "@/components/mobile-sidebar-context";
 import { useEffect, useState, useTransition } from "react";
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Tasks", href: "/admin/tasks", icon: ListTodo },
   { name: "Models", href: "/admin/models", icon: Users },
   { name: "Reels", href: "/admin/content/reels", icon: Film },
   { name: "Scripts", href: "/admin/content/scripts", icon: MessageSquare },

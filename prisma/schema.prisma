@@ -45,6 +45,8 @@ model User {
   createdAnnouncements Announcement[]    @relation("AnnouncementCreator")
   sessions           Session[]
   accounts           Account[]
+  createdTasks       Task[]              @relation("TaskCreator")
+  completedTasks     Task[]              @relation("TaskCompleter")
 
   @@map("users")
 }
@@ -262,4 +264,45 @@ model PoolVideo {
 
   @@index([poolId])
   @@map("pool_videos")
+}
+
+// ==================== TASK MANAGEMENT ====================
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  title       String
+  description String?      @db.Text
+  dueDate     DateTime?
+  priority    TaskPriority @default(MEDIUM)
+  status      TaskStatus   @default(PENDING)
+  
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  completedAt DateTime?
+
+  // Relations
+  createdBy     User   @relation("TaskCreator", fields: [createdById], references: [id])
+  createdById   String
+  
+  completedBy   User?  @relation("TaskCompleter", fields: [completedById], references: [id])
+  completedById String?
+
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+  @@index([createdById])
+  @@map("tasks")
 }
